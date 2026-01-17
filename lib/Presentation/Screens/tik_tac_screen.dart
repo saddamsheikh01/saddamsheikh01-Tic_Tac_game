@@ -58,7 +58,7 @@ class _TicTacScreenState extends State<TicTacScreen> {
           board[p[0]] == board[p[1]] &&
           board[p[0]] == board[p[2]]) {
         setState(() {
-          winIndexes = List<int>.from(p); // ✅ FIXED
+          winIndexes = List<int>.from(p);
           board[p[0]] == 'O' ? oScore++ : xScore++;
         });
 
@@ -78,12 +78,15 @@ class _TicTacScreenState extends State<TicTacScreen> {
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        backgroundColor: AppColors.darkCard,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        backgroundColor: AppColors.accent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           title,
           textAlign: TextAlign.center,
-          style: const TextStyle(color: AppColors.white),
+          style: const TextStyle(
+            color: AppColors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         actions: [
           TextButton(
@@ -91,7 +94,10 @@ class _TicTacScreenState extends State<TicTacScreen> {
               Navigator.pop(context);
               _resetBoard();
             },
-            child: const Text(AppStrings.playAgain),
+            child: Text(
+              AppStrings.playAgain,
+              style: TextStyle(color: AppColors.accent),
+            ),
           ),
         ],
       ),
@@ -103,7 +109,7 @@ class _TicTacScreenState extends State<TicTacScreen> {
     setState(() {
       board = List.filled(9, '');
       filledBoxes = 0;
-      winIndexes = []; // ✅ FIXED
+      winIndexes = [];
       oTurn = true;
     });
   }
@@ -140,6 +146,13 @@ class _TicTacScreenState extends State<TicTacScreen> {
                     fontWeight: FontWeight.bold,
                     color:
                     oTurn ? AppColors.playerO : AppColors.playerX,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 12,
+                        color:
+                        oTurn ? AppColors.playerO : AppColors.playerX,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -171,6 +184,7 @@ class _TicTacScreenState extends State<TicTacScreen> {
                     ),
                     itemBuilder: (_, index) {
                       final isWin = winIndexes.contains(index);
+                      final symbol = board[index];
 
                       return GestureDetector(
                         onTap: () => _tap(index),
@@ -181,24 +195,43 @@ class _TicTacScreenState extends State<TicTacScreen> {
                             ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: AppColors.white.withOpacity(0.12),
+                                color: AppColors.white.withOpacity(0.10),
                                 borderRadius: BorderRadius.circular(22),
+                                boxShadow: isWin
+                                    ? [
+                                  BoxShadow(
+                                    color: AppColors.success,
+                                    blurRadius: 20,
+                                    spreadRadius: 2,
+                                  ),
+                                ]
+                                    : [],
                                 border: Border.all(
                                   color: isWin
                                       ? AppColors.success
-                                      : AppColors.white.withOpacity(0.25),
-                                  width: isWin ? 2 : 1,
+                                      : AppColors.white.withOpacity(0.18),
+                                  width: isWin ? 2.5 : 1,
                                 ),
                               ),
                               child: Center(
                                 child: Text(
-                                  board[index],
+                                  symbol,
                                   style: TextStyle(
                                     fontSize: 48,
                                     fontWeight: FontWeight.bold,
-                                    color: board[index] == 'X'
+                                    color: symbol == 'X'
                                         ? AppColors.playerX
                                         : AppColors.playerO,
+                                    shadows: symbol.isNotEmpty
+                                        ? [
+                                      Shadow(
+                                        blurRadius: 14,
+                                        color: symbol == 'X'
+                                            ? AppColors.playerX
+                                            : AppColors.playerO,
+                                      ),
+                                    ]
+                                        : [],
                                   ),
                                 ),
                               ),
@@ -218,6 +251,7 @@ class _TicTacScreenState extends State<TicTacScreen> {
                   onPressed: _resetGame,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.error,
+                    elevation: 10,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 46, vertical: 14),
                     shape: RoundedRectangleBorder(
@@ -226,7 +260,10 @@ class _TicTacScreenState extends State<TicTacScreen> {
                   ),
                   child: const Text(
                     AppStrings.reset,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.white,
+                    ),
                   ),
                 ),
               ),
@@ -247,10 +284,10 @@ class _TicTacScreenState extends State<TicTacScreen> {
           width: 150,
           padding: const EdgeInsets.symmetric(vertical: 18),
           decoration: BoxDecoration(
-            color: AppColors.white.withOpacity(0.15),
+            color: AppColors.white.withOpacity(0.12),
             borderRadius: BorderRadius.circular(22),
             border: Border.all(
-              color: AppColors.white.withOpacity(0.25),
+              color: AppColors.white.withOpacity(0.18),
             ),
           ),
           child: Column(
@@ -269,6 +306,12 @@ class _TicTacScreenState extends State<TicTacScreen> {
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: color,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 12,
+                      color: color,
+                    ),
+                  ],
                 ),
               ),
             ],
